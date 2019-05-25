@@ -34,4 +34,4 @@ deploy:
   - provider: script
       script: echo 'WIP'
       on:
-        all_branches: true
+        - all_branches: true
