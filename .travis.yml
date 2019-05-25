@@ -31,7 +31,7 @@ before_deploy:
 # branch: name of the branch. If omitted, this defaults to the app-specific branch, or master.
 # If the branch name is not known ahead of time, you can specify  all_branches: true
 deploy:
-  - provider: script
+  provider: script
       script: echo 'WIP'
       on:
-        - all_branches: true
+        all_branches: true
