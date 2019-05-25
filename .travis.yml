@@ -32,6 +32,6 @@ before_deploy:
 # If the branch name is not known ahead of time, you can specify  all_branches: true
 deploy:
   provider: script
-      script: echo 'WIP'
-      on:
-        all_branches: true
+  script: echo 'WIP'
+  on:
+    all_branches: true
