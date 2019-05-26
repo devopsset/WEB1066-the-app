@@ -1,9 +1,9 @@
 language: java
 jdk:
-- oraclejdk8
-- oraclejdk9
+  - oraclejdk8
+  - oraclejdk9
 services:
-- docker
+  - docker
 env:
   matrix:
   - COVERAGE=0.057 BUILD_TARGET=./monolithic/ui
@@ -17,13 +17,13 @@ env:
     - DOCKER_LOGIN=evygovska
     secure: QUmhJey0BVJrzmlcvzRBQbJ6ongcZvBLcBVI6hig/eRghToeVsnHoaqXpcwx6zzt64zL2qLE9eP1rT/m7NgQnuqpNrfi63loO+KtGoMLV5eX/pFgEe7E5vzxIz3fk1mC303ve0mbDj+4gYQAudOrhg5jqe8adpoudFRseSFENRQrx93sGvTXHJBVJOkjz3kSS/Yeh/soLGqzD0RppYc9Gp8SGeMa+o76x3TrqfAxf1wLaSlX3KdONMAAgUwH/fShbgsZat2YGXDN8UOOb4Kk+Bn18JspH+C+jxjJJ7q2Sv62CauGN3M24kJtaQVJFqGm64/dXJ0RM3bKfi6XdURongPWrtsZaAm1Rch52mk9xu0PRKap9e1g4FyHjvybFkFGh6JSRCwCOo2TTUBWosjyDVo2OZTT95tzDBCnf7DoHUiqmQSK4jhkScPstC0pjDoVcLhGa4+yVzsnbfmd97yKB3Wc93cmPPOlZZ3T45Y09mNyQfLdGMBtPDYCBBggYO45hWBodbqRGCrGzt65Z6hxzTRmbqJpK0wV+0BEZ0kxV7a2m1jJc8EJJl4+TxBKLc39oX8BvvAd2SZgdJ1/DtTAfciF22ywhv+M9nkHl0b/6GhIl//U49xE0mmumV17HYvTK3GOVjBeaY7KzKe4eHZbb68ZsfYpNcRowCX+CuBbEH8=
 install:
-- "./gradlew clean jar"
+  - "./gradlew clean jar"
 script:
-- "./gradlew -p $BUILD_TARGET check"
+  - "./gradlew -p $BUILD_TARGET check"
 after_success:
-- find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
+  - find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
 deploy:
-  provider: script
-  script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\" --password-stdin ;"
-  on:
-    all_branches: true
+  - provider: script
+    script: bash -c "echo \"${DOCKER_PASSWORD}\" | docker login --username \"${DOCKER_LOGIN}\" --password-stdin ;"
+    on:
+      all_branches: true
