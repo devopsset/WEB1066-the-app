@@ -1,10 +1,29 @@
-language: python
-install: "pip install -r requirements.txt"
-
+language: java
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+services:
+  - docker
+env:
+  matrix:
+    - COVERAGE=0.057 BUILD_TARGET=./monolithic/ui
+    - COVERAGE=0.148 BUILD_TARGET=./monolithic/service/cart
+    - COVERAGE=0.0 BUILD_TARGET=./monolithic/service/user
+    - COVERAGE=0.362 BUILD_TARGET=./monolithic/repository/order
+    - COVERAGE=0.0 BUILD_TARGET=./monolithic/repository/cart
+    - COVERAGE=0.124 BUILD_TARGET=./monolithic/repository/product
+    - COVERAGE=0.318 BUILD_TARGET=./monolithic/repository/user
+  global:
+    - DOCKER_LOGIN=evygovska
+    - secure: QUmhJey0BVJrzmlcvzRBQbJ6ongcZvBLcBVI6hig/eRghToeVsnHoaqXpcwx6zzt64zL2qLE9eP1rT/m7NgQnuqpNrfi63loO+KtGoMLV5eX/pFgEe7E5vzxIz3fk1mC303ve0mbDj+4gYQAudOrhg5jqe8adpoudFRseSFENRQrx93sGvTXHJBVJOkjz3kSS/Yeh/soLGqzD0RppYc9Gp8SGeMa+o76x3TrqfAxf1wLaSlX3KdONMAAgUwH/fShbgsZat2YGXDN8UOOb4Kk+Bn18JspH+C+jxjJJ7q2Sv62CauGN3M24kJtaQVJFqGm64/dXJ0RM3bKfi6XdURongPWrtsZaAm1Rch52mk9xu0PRKap9e1g4FyHjvybFkFGh6JSRCwCOo2TTUBWosjyDVo2OZTT95tzDBCnf7DoHUiqmQSK4jhkScPstC0pjDoVcLhGa4+yVzsnbfmd97yKB3Wc93cmPPOlZZ3T45Y09mNyQfLdGMBtPDYCBBggYO45hWBodbqRGCrGzt65Z6hxzTRmbqJpK0wV+0BEZ0kxV7a2m1jJc8EJJl4+TxBKLc39oX8BvvAd2SZgdJ1/DtTAfciF22ywhv+M9nkHl0b/6GhIl//U49xE0mmumV17HYvTK3GOVjBeaY7KzKe4eHZbb68ZsfYpNcRowCX+CuBbEH8=
+install:
+  - "./gradlew clean jar"
 script:
-  # Run ANSIBLE checks
-  # - ANSIBLE0008: Disabled for use of sudo warnings - to address
-  # - ANSIBLE0011: Disabled for all tasks which should be named
-  # - ANSIBLE0012: Disabled (should not change if nothings needs doing) - to address
-  # - ANSIBLE0013: Disabled - few uses of shell commands - to address
-  - find vagrant/provision -name "*.yml" -exec ansible-lint -x ANSIBLE008,ANSIBLE0011,ANSIBLE0012,ANSIBLE0013  {} +
+  - "./gradlew -p $BUILD_TARGET check"
+after_success:
+  - find . -name jacocoTestReport.csv|xargs cat|awk -F',' '{print $3" "$4" "$5}'
+deploy:
+  provider: script
+  script: ./script/deploy.sh
+  on:
+    all_branches: true
